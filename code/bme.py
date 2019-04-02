@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Funkcii za obrabotka na biomedicinski signali.
+Biomedical electronics utility functions.
+
+Copyright 2017 - 2019 by Branislav Gerazov
+
+See the file LICENSE for the license associated with this software.
+
+Author(s):
+  Branislav Gerazov, March 2017
 """
 import numpy as np
 from scipy import fftpack as fft
+from scipy import signal as sig
 from matplotlib import pyplot as plt
+
 
 def get_spectrum(fs, x, n_fft=None, log=True):
     """
@@ -26,20 +35,26 @@ def get_spectrum(fs, x, n_fft=None, log=True):
 
     return f, x_spec
 
-def get_spectrogram(fs, x, n_win=None, log=True):
+
+def get_spectrogram(fs, x,
+                    n_win=None,
+                    log=True,
+                    win_type='hann'):
     """
     Calculate spectrogram.
     """
     if n_win is None:
         n_win = 256
+    win = sig.get_window(win_type, n_win)
     n_half = np.int(n_win / 2)
-    n_hop = n_half # Hann, Hamming
+    n_hop = n_half
     pad = np.zeros(n_half)
     x_pad = np.concatenate((pad, x, pad))
     pos = 0
     frames = None
     while pos <= x_pad.size - n_win:
         frame = x_pad[pos : pos+n_win]
+        frame = frame * win
         f, frame_spec = get_spectrum(fs, frame, n_win, log=log)
         frame_2d = frame_spec[:, np.newaxis]
         if frames is None:
@@ -47,16 +62,19 @@ def get_spectrogram(fs, x, n_win=None, log=True):
         else:
             frames = np.concatenate((frames, frame_2d),
                                     axis=1)
-    pos += n_hop
+        pos += n_hop
     t = np.arange(0, frames.shape[1]*n_hop/fs, n_hop/fs)
     return t, f, frames
 
-def show_spectrogram(t, f, spectrogram):
+
+def show_spectrogram(t, f, spectrogram,
+                     vmin=-90, vmax=0):
     plt.figure()
     plt.imshow(spectrogram,
                extent=[0, t[-1], 0, f[-1]],
                aspect='auto',
                origin='lower',
-               vmin=-90,
+               vmin=vmin,
+               vmax=vmax,
                )
     plt.colorbar()

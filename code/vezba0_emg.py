@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Processing EMG signal from BioSPPy.
+Processing EMG signal.
 
-Created on Tue Mar 26 14:15:31 2019
+Copyright 2017 - 2019 by Branislav Gerazov
 
-@author: dsp
+See the file LICENSE for the license associated with this software.
+
+Author(s):
+  Branislav Gerazov, March 2017
 """
+
 #%% imports
 import numpy as np
 from matplotlib import pyplot as plt
@@ -43,15 +47,15 @@ emg_amp = emg_amp / emg.size
 emg_db = 20 * np.log10(emg_amp)
 
 f = np.linspace(0, fs/2, n_keep)
-#%% plot 
+#%% plot
 plt.figure()
 plt.plot(f, emg_db)
 plt.grid()
 
 #%% spectrum func
 import bme
-f, emg_spec = bme.get_spectrum(fs, 
-                               emg, 
+f, emg_spec = bme.get_spectrum(fs,
+                               emg,
                                n_fft)
 #%% spectrogram
 # init
@@ -71,7 +75,7 @@ while pos <= emg_pad.size - n_win:
                                      frame,
                                      n_win)
     frame_2d = frame_spec[:, np.newaxis]
-    
+
     if frames is None:
         frames = frame_2d
     else:
@@ -84,8 +88,8 @@ while pos <= emg_pad.size - n_win:
 import bme
 n_win = 256
 emg_nodc = emg - emg.mean()
-t, f, emg_spectrogram = bme.get_spectrogram(fs, 
-                                            emg_nodc, 
+t, f, emg_spectrogram = bme.get_spectrogram(fs,
+                                            emg_nodc,
                                             n_win)
 #%% plot spectrogram
 plt.figure()
@@ -97,7 +101,7 @@ plt.imshow(emg_spectrogram,
            )
 plt.colorbar()
 
-#%% filter highpass 50 Hz 
+#%% filter highpass 50 Hz
 from scipy import signal as sig
 f_h = 100
 order = 4
@@ -215,10 +219,3 @@ plt.plot(t, onset_mavg, c='c',
          lw=4, alpha=.8)
 
 plt.grid()
-
-
-
-
-
-
-
