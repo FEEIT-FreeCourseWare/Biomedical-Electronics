@@ -22,6 +22,15 @@ The following signal samples are taken from [BioSPPy - Biosignal Processing in P
 EEG signal samples are taken from the [EEG Motor Movement/Imagery Dataset](http://www.physionet.org/pn4/eegmmidb/) available on [PhysioNet](https://physionet.org/) corresponding to Subject 1, tasks 3, 5, and 6: `S001R03.edf`, `S001R05.edf`, and `S001R06.edf`.
 For convenience channel C3 from tasks 1 and 2 is also made available as a pickle `eeg_sample.pkl`, which is used in the introductory EEG excercise `code/vezba2_eeg.py`.
 
+The dataset for Human Activity Detection is the one released by the [Wireless Sensor Data Mining (WISDM) Lab](http://www.cis.fordham.edu/wisdm/).
+The raw accelerometer signals are used in `vezba3_har.py` that are not included because of size limitations.
+The data can be downloaded and extracted using the following code:
+
+```bash
+wget http://www.cis.fordham.edu/wisdm/includes/datasets/latest/WISDM_ar_latest.tar.gz
+mkdir path_to_git/code/data/har_wisdm
+tar -xzvf WISDM_ar_latest.tar.gz -C path_to_git/code/data/har_wisdm
+```
 
 
 Branislav Gerazov
