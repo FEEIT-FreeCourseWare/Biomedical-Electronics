@@ -33,12 +33,13 @@ class Neuron:
         self.weights -= self.grad_weights * self.learn
         self.bias -= self.grad_bias * self.learn
 
-    def backprop(self, loss, x):
-        self.grad_weights = -2*loss*x
-        self.grad_bias = -2*loss
+    def backprop(self, y, y_pred, x):
+        grad_pred = -2*(y - y_pred)
+        self.grad_weights = grad_pred*x
+        self.grad_bias = grad_pred
 
     def loss(self, y, y_pred):
-        return y - y_pred
+        return (y - y_pred)**2
 
     def train(self, xs, ys, epochs=20, learn=0.01):
         self.learn = learn
@@ -48,9 +49,9 @@ class Neuron:
             for x, y in zip(xs, ys):
                 y_pred = self.feedforward(x)
                 loss = self.loss(y, y_pred)
-                self.backprop(loss, x)
+                self.backprop(y, y_pred, x)
                 self.update()
-                epoch_loss += loss ** 2
+                epoch_loss += loss
             print('->', epoch_loss / xs.size)
 
 
