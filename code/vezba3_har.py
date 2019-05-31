@@ -133,8 +133,11 @@ cm = metrics.confusion_matrix(
         y_pred_prob.argmax(axis=1))
 print(cm)
 
-# normalise and plot heat map
+# normalise
 cm = cm / cm.sum(axis=0)
+print(cm)
+
+# plot heat map
 fig, ax = plt.subplots()
 im = ax.imshow(cm, aspect='auto', interpolation='nearest', vmax=1, vmin=0)
 ax.set(xticks=np.arange(cm.shape[1]),
