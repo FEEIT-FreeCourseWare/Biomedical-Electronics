@@ -137,8 +137,6 @@ print(cm)
 cm = cm / cm.sum(axis=0)
 fig, ax = plt.subplots()
 im = ax.imshow(cm, aspect='auto', interpolation='nearest', vmax=1, vmin=0)
-ax.xlabel = 'Prediction'
-ax.ylabel = 'Ground truth'
 ax.set(xticks=np.arange(cm.shape[1]),
        yticks=np.arange(cm.shape[0]),
        xticklabels=activities,
