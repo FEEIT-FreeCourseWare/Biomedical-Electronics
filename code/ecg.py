@@ -121,3 +121,44 @@ plt.figure()
 plt.plot([0.2, 1.2], [0.2, 1.2], "--r")
 plt.plot(r_r_prev, r_r_next, "o")
 plt.grid()
+
+# %% extract average heartbeat
+t_offset_left = 0.250  # s
+t_offset_right = 0.600  # s
+n_offset_left = int(t_offset_left * fs)
+n_offset_right = int(t_offset_right * fs)
+
+beats = None
+for peak_t in peak_final_ts:
+    start = int(peak_t * fs) - n_offset_left
+    stop = int(peak_t * fs) + n_offset_right
+    beat = ekg_filt[start: stop]
+    beat_2d = beat[np.newaxis, :]  # make into 2D array
+    if beats is None:
+        beats = beat_2d
+    else:
+        beats = np.concatenate((beats, beat_2d), axis=0)
+
+# calculate average heartbeat waveform
+beat_avg = beats.mean(axis=0)
+
+# %% plot
+t_beat = np.arange(beat.size) / fs
+plt.figure()
+plt.plot(beats.T, alpha=0.3)
+plt.plot(beat_avg, lw=4, alpha=0.3)
+plt.grid()
+
+# %% calculate deviation using MSE
+# MSE = 1/N * sum((x - x_avg)^2)
+mses = []
+for beat in beats:
+    n_total = n_offset_left + n_offset_right
+    mse = np.sum((beat_avg - beat)**2) / n_total
+    print(f"MSE: {mse:.4f}")
+    mses.append(mse)
+
+# %% plot bar mses
+plt.figure()
+plt.bar(np.arange(len(mses)), mses)
+plt.grid()
